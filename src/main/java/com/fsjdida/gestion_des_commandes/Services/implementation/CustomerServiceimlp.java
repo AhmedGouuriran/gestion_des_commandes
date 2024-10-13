@@ -3,6 +3,7 @@ package com.fsjdida.gestion_des_commandes.Services.implementation;
 import com.fsjdida.gestion_des_commandes.Dao.CustomerDao;
 import com.fsjdida.gestion_des_commandes.Dto.CustomerRequestDto;
 import com.fsjdida.gestion_des_commandes.Dto.CustomerResponseDto;
+import com.fsjdida.gestion_des_commandes.Exceptions.EntityNotFoundException;
 import com.fsjdida.gestion_des_commandes.Services.CustomerService;
 import com.fsjdida.gestion_des_commandes.models.Customer;
 import lombok.extern.slf4j.Slf4j; // Import the Lombok Slf4j annotation
@@ -35,7 +36,7 @@ public class CustomerServiceimlp implements CustomerService { // Keeping the cla
     @Override
     public CustomerResponseDto findById(Long id_customer) {
         Customer customer = customerDao.findById(id_customer)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Customer with ID: " + id_customer + " not found"));
 
         log.info("Customer found with ID: {}", id_customer); // Log found customer info
         return modelMapper.map(customer, CustomerResponseDto.class);
@@ -65,7 +66,7 @@ public class CustomerServiceimlp implements CustomerService { // Keeping the cla
             return modelMapper.map(updated, CustomerResponseDto.class);
         } else {
             log.warn("Attempt to update a non-existing customer with ID: {}", id_customer); // Log warning
-            throw new RuntimeException("Customer not found");
+            throw new EntityNotFoundException("Customer not found for updating");
         }
     }
 

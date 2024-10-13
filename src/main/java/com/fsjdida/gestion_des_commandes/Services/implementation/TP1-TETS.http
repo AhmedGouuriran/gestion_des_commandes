@@ -1,0 +1,8 @@
+### GET request to example server
+GET http://localhost:8080/customers/recuperer_clients
+
+### test customer not found exception
+GET http://localhost:8080/customers/recuperer_ParId/5
+
+
+

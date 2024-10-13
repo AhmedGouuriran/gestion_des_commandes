@@ -3,6 +3,7 @@ package com.fsjdida.gestion_des_commandes.Controllers;
 import com.fsjdida.gestion_des_commandes.Dto.CustomerRequestDto;
 import com.fsjdida.gestion_des_commandes.Dto.CustomerResponseDto;
 import com.fsjdida.gestion_des_commandes.Services.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,14 +51,14 @@ public class CustomerController {
 
     // I N S E R T
     @PostMapping("/store")
-    public ResponseEntity<CustomerResponseDto> save(@RequestBody() CustomerRequestDto customerRequestDto) {
+    public ResponseEntity<CustomerResponseDto> save(@Valid @RequestBody() CustomerRequestDto customerRequestDto) {
         CustomerResponseDto customerResponseDto = customerService.save(customerRequestDto);
         return new ResponseEntity<>(customerResponseDto, HttpStatus.CREATED); // utilisant new c'est denamic
     }
 
     // U P D A T E
     @PutMapping("/update/{id}")
-    public ResponseEntity<CustomerResponseDto> update(@RequestBody() CustomerRequestDto customerRequestDto, @PathVariable("id") long id_customer) {
+    public ResponseEntity<CustomerResponseDto> update(@Valid @RequestBody() CustomerRequestDto customerRequestDto, @PathVariable("id") long id_customer) {
        CustomerResponseDto customerResponseDto = customerService.update(customerRequestDto, id_customer);
         return ResponseEntity.accepted().body(customerResponseDto);
     }
