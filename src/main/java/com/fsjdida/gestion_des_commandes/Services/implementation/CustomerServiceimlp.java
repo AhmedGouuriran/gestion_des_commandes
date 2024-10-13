@@ -5,20 +5,20 @@ import com.fsjdida.gestion_des_commandes.Dto.CustomerRequestDto;
 import com.fsjdida.gestion_des_commandes.Dto.CustomerResponseDto;
 import com.fsjdida.gestion_des_commandes.Services.CustomerService;
 import com.fsjdida.gestion_des_commandes.models.Customer;
+import lombok.extern.slf4j.Slf4j; // Import the Lombok Slf4j annotation
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j // Use Lombok's Slf4j annotation to create a logger
 @Service("impl1")
-public class CustomerServiceimlp implements CustomerService {
-    private CustomerDao customerDao;
-    private ModelMapper modelMapper;
+public class CustomerServiceimlp implements CustomerService { // Keeping the class name as "CustomerServiceimlp"
+    private final CustomerDao customerDao; // Made fields final for better practice
+    private final ModelMapper modelMapper;
 
-    //    @Autowired
     public CustomerServiceimlp(CustomerDao customerDao, ModelMapper modelMapper) {
         this.customerDao = customerDao;
         this.modelMapper = modelMapper;
@@ -28,48 +28,54 @@ public class CustomerServiceimlp implements CustomerService {
     public CustomerResponseDto save(CustomerRequestDto customerRequestDto) {
         Customer customer = modelMapper.map(customerRequestDto, Customer.class);
         Customer saved = customerDao.save(customer);
-        return modelMapper.map(saved, CustomerResponseDto.class); // reponse est customer response dto
+        log.info("Customer saved with ID: {}", saved.getId_customer()); // Log saved customer info
+        return modelMapper.map(saved, CustomerResponseDto.class);
     }
 
     @Override
     public CustomerResponseDto findById(Long id_customer) {
-        Customer customer = customerDao.findById(id_customer).orElseThrow(() -> new RuntimeException("Customer not found"));
+        Customer customer = customerDao.findById(id_customer)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
 
+        log.info("Customer found with ID: {}", id_customer); // Log found customer info
         return modelMapper.map(customer, CustomerResponseDto.class);
     }
 
     @Override
-    public CustomerResponseDto fundByFirstName(String fisrtName) {
-        Customer customer = customerDao.findByFirstName(fisrtName);
-
+    public CustomerResponseDto fundByFirstName(String firstName) {
+        Customer customer = customerDao.findByFirstName(firstName);
+        log.info("Customer found with first name: {}", firstName); // Log found customer info
         return modelMapper.map(customer, CustomerResponseDto.class);
     }
 
     @Override
     public void deleteById(Long id_customer) {
         customerDao.deleteById(id_customer);
-        //Customer customer =customerDao.findById(id_customer).orElseThrow(()->new RuntimeException("Customer not found"));
+        log.info("Customer deleted with ID: {}", id_customer); // Log deletion info
     }
 
     @Override
     public CustomerResponseDto update(CustomerRequestDto customerRequestDto, long id_customer) {
         Optional<Customer> customer = customerDao.findById(id_customer);
         if (customer.isPresent()) {
-            Customer mycustomer = modelMapper.map(customerRequestDto, Customer.class);
-            mycustomer.setId_customer(id_customer);// if we don't add this one he will add a new instance not updated thwe old one
-            Customer updated = customerDao.save(mycustomer);
+            Customer myCustomer = modelMapper.map(customerRequestDto, Customer.class);
+            myCustomer.setId_customer(id_customer);
+            Customer updated = customerDao.save(myCustomer);
+            log.info("Customer updated with ID: {}", id_customer); // Log update info
             return modelMapper.map(updated, CustomerResponseDto.class);
         } else {
+            log.warn("Attempt to update a non-existing customer with ID: {}", id_customer); // Log warning
             throw new RuntimeException("Customer not found");
         }
-
-
     }
 
     @Override
-    public List<CustomerRequestDto> findAll() {
-        return customerDao.findAll().stream()
-                .map(element -> modelMapper.map(element, CustomerRequestDto.class))
+    public List<CustomerResponseDto> findAll() {
+        List<Customer> customers = customerDao.findAll();
+        log.info("DAO returned {} customers", customers.size()); // Log the size of the list
+
+        return customers.stream()
+                .map(element -> modelMapper.map(element, CustomerResponseDto.class))
                 .collect(Collectors.toList());
     }
 }

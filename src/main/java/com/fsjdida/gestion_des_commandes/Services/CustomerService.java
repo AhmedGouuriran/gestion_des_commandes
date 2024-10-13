@@ -18,5 +18,5 @@ public interface CustomerService {
 
     CustomerResponseDto update(CustomerRequestDto customerRequestDto , long id_customer);
 
-    List<CustomerRequestDto> findAll();
+    List<CustomerResponseDto> findAll();
 }

@@ -35,7 +35,7 @@ public class CustomerServiceimpl2 implements CustomerService {
     }
 
     @Override
-    public List<CustomerRequestDto> findAll() {
+    public List<CustomerResponseDto> findAll() {
         return List.of();
     }
 }
