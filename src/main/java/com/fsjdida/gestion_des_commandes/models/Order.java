@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-@Entity //
+@Entity
 @Table(name = "orders")
-@Data // using lombok getter stter
+@Data
 @AllArgsConstructor
-@NoArgsConstructor // constructeur par defaut
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -21,9 +21,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id_order;
 
-    private Date orderdate;
+    private Date orderDate;
 
-    private BigDecimal totalamount;
+    private BigDecimal totalAmount;
 
 
     @ManyToOne
